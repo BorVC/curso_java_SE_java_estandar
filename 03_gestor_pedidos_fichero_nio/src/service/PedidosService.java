@@ -11,6 +11,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import model.Pedido;
 import utilidades.Util;
@@ -81,12 +82,12 @@ public class PedidosService {
 	
 	public void eliminarPedido(String producto) {
 		try {
-			String pedidos = Files.lines(pt)
-					.map(p -> Util.convertirCadenaAPedido(p))
-					.filter( p -> p.getProducto() != producto)
-					.map(s -> Util.convertirPedidoACadena(s))
-					.toString();
-			Files.writeString(pt, pedidos);
+			List<String> listaPedidos = Files.lines(pt)
+					.map(s -> Util.convertirCadenaAPedido(s))
+					.filter(p -> !p.getProducto().equals(producto))
+					.map(p -> Util.convertirPedidoACadena(p) + System.lineSeparator() )
+					.collect(Collectors.toList());
+			Files.write(pt, listaPedidos,StandardOpenOption.TRUNCATE_EXISTING);
 			
 		} catch (Exception ex) {
 			ex.printStackTrace();
