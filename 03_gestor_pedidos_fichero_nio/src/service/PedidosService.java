@@ -64,22 +64,18 @@ public class PedidosService {
 	}
 	
 	public Pedido pedidoProximoFecha(LocalDate fecha) {
-		Pedido pAux=new Pedido();
-		pAux.setFechaPedido(LocalDate.of(1, 1, 1));
-		try(FileReader fr=new FileReader(fichero);
-				BufferedReader bf=new BufferedReader(fr);){
-			String linea;
-			while((linea=bf.readLine())!=null) {
-				Pedido p=Util.convertirCadenaAPedido(linea);
-				if(Math.abs(ChronoUnit.DAYS.between(p.getFechaPedido(), fecha))<
-						Math.abs(ChronoUnit.DAYS.between(pAux.getFechaPedido(), fecha))) {
-					pAux=p;
-				}
-			}
+	
+		try{
+			return Files.lines(pt)
+			.map(n -> Util.convertirCadenaAPedido(n))
+			.min(Comparator.comparingLong(p->Math.abs(ChronoUnit.DAYS.between(p.getFechaPedido(), fecha))))
+			.orElse(null);
+
 		}
 		catch(IOException ex) {
 			ex.printStackTrace();
+			return null;
 		}
-		return pAux;
+
 	}
 }
