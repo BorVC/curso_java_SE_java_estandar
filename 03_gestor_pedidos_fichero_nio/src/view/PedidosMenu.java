@@ -2,7 +2,7 @@ package view;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import model.Pedido;
@@ -30,6 +30,9 @@ public class PedidosMenu {
 						pedidosEntreFechas();
 						break;
 					case 4:
+						eliminarPedido();
+						break;
+					case 5:
 						System.out.println("Adios!");
 						break;
 					
@@ -47,7 +50,8 @@ public class PedidosMenu {
 				1.- Agregar Pedido
 				2.- Pedido más reciente
 				3.- Pedidos entre fechas
-				4.- Salir
+				4.- Eliminar pedido
+				5.- Salir
 				
 				""");
 	}
@@ -77,12 +81,18 @@ public class PedidosMenu {
 		LocalDate fecha1=LocalDate.parse(sc.nextLine(),sdf);	
 		System.out.println("Fecha límite (dia/mes/año):");
 		LocalDate fecha2=LocalDate.parse(sc.nextLine(),sdf);	
-		ArrayList<Pedido> pedidosEncontrados=service.pedidosEntreFechas(fecha1, fecha2);
+		List<Pedido> pedidosEncontrados=service.pedidosEntreFechas(fecha1, fecha2);
 		for(Pedido p:pedidosEncontrados) {
 			System.out.print("Producto: "+p.getProducto()+" ");
 			System.out.print("Unidades: "+p.getUnidades()+" ");
 			System.out.println("Fecha pedido: "+p.getFechaPedido().format(sdf)+" ");
 		}
+	}
+	static void eliminarPedido() {
+		Scanner sc=new Scanner(System.in);
+		System.out.println("Producto:");
+		String producto=sc.nextLine();
+		service.eliminarPedido(producto);
 	}
 
 }

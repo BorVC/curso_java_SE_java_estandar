@@ -36,12 +36,12 @@ public class PedidosService {
 		}
 	}
 	
-	public Optional<Pedido> pedidoMasReciente() {
+	public Pedido pedidoMasReciente() {
 		try {
 			return Files.lines(pt)
 					.map(n -> Util.convertirCadenaAPedido(n))
 					.max(Comparator.comparing((Pedido p)->p.getFechaPedido()))
-					;
+					.orElse(null);
 					
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -77,5 +77,30 @@ public class PedidosService {
 			return null;
 		}
 
+	}
+	
+	public void eliminarPedido(String producto) {
+		try {
+			String pedidos = Files.lines(pt)
+					.map(p -> Util.convertirCadenaAPedido(p))
+					.filter( p -> p.getProducto() != producto)
+					.map(s -> Util.convertirPedidoACadena(s))
+					.toString();
+			Files.writeString(pt, pedidos);
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public List<Pedido> listaPedidos(){
+		try {
+			return Files.lines(pt)
+					.map(n -> Util.convertirCadenaAPedido(n))
+					.toList();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			return null;
+		}
 	}
 }
