@@ -14,8 +14,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class Empleado {
-	@SerializedName(value = "nombre") 
-	private String empleado;
+	//@SerializedName(value = "nombre") 
+	private String nombre;
 	private String email;
 	private double salario;
 	private String departamento;
