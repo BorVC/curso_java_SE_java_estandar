@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import exceptions.ErrorFuenteDatosException;
 import service.NotasService;
 
 class TestNotasService {
@@ -22,22 +23,22 @@ class TestNotasService {
 	}
 
 	@Test
-	void testMedia() {
+	void testMedia() throws ErrorFuenteDatosException {
 		assertEquals(5.0, service.media());
 	}
 
 	@Test
-	void testMax() {
+	void testMax() throws ErrorFuenteDatosException {
 		assertEquals(8.0,service.max());
 	}
 
 	@Test
-	void testMin() {
+	void testMin() throws ErrorFuenteDatosException {
 		assertEquals(1.0,service.min());
 	}
 
 	@Test
-	void testObtenerNotas() {
+	void testObtenerNotas() throws ErrorFuenteDatosException {
 		assertEquals(4,service.obtenerNotas().size());
 		assertArrayEquals(new Double[] {5.0,8.0,1.0,6.0}, service.obtenerNotas().toArray(new Double[0]));
 	}
