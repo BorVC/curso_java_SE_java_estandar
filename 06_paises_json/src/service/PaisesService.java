@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,6 +30,7 @@ public class PaisesService {
 		}
 	}
 	
+	//Lista de continentes
 	public List<String> listaContinentes(){
 		return getPaises()
 				.map(p -> p.getContinente())//Stream<String>
@@ -36,22 +38,38 @@ public class PaisesService {
 				.toList();
 	}
 	
+	//Lista de paises buscados por continente
 	public List<Pais> listaPaisPorContinente(String continente){
 		return getPaises()
-				.filter(p -> p.getContinente().equals(continente))
+				.filter(p -> p.getContinente().equalsIgnoreCase(continente))
 				.toList();
 	}
 	
+	//País más poblado
 	public Pais paisMasPoblado() {
 		return getPaises()
 				.max(Comparator.comparingInt(p -> p.getHabitantes()))
 				.orElse(null);
 	}
 	
-	public Map<Boolean,Pais> tablaPorContinente(){
+	//Tabla con paises agrupados por continente
+	public Map<String,String> tablaPorContinente(){
+		return getPaises()
+				.collect(Collectors.toMap(p -> p.getContinente(),p -> p.getCapital()));
+				//.collect(Collectors.groupingBy(p -> p.getContinente()));	
+	}
+	
+	public Map<String,List<Pais>> tablaPaisesPorContinente(){
 		return getPaises()
 				.collect(Collectors.groupingBy(p -> p.getContinente()));
-				
+	}
+	
+	//País a partir de su capital
+	public Pais paisPorCapital(String capital) {
+		return getPaises()
+				.filter(p -> p.getCapital().equalsIgnoreCase(capital))
+				.findFirst()
+				.orElse(null);			
 	}
 	
 	
