@@ -87,7 +87,7 @@ public class PedidosService {
 			List<String> listaPedidos = Files.lines(pt)
 					.map(s -> Util.convertirCadenaAPedido(s))//Stream<Pedido>
 					.filter(p -> !p.getProducto().equals(producto))//Stream<Pedido>
-					.map(p -> Util.convertirPedidoACadena(p) + System.lineSeparator())//Stream<String>
+					.map(p -> Util.convertirPedidoACadena(p))//Stream<String>
 					.toList();//Lista nueva con String de pedidos
 			Files.write(pt, listaPedidos);
 			

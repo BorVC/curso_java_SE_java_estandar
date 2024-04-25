@@ -85,12 +85,20 @@ public class PedidosMenu {
 		LocalDate fecha1=LocalDate.parse(sc.nextLine(),sdf);	
 		System.out.println("Fecha límite (dia/mes/año):");
 		LocalDate fecha2=LocalDate.parse(sc.nextLine(),sdf);	
-		List<Pedido> pedidosEncontrados=service.pedidosEntreFechas(fecha1, fecha2);
+		/*List<Pedido> pedidosEncontrados=service.pedidosEntreFechas(fecha1, fecha2);
 		for(Pedido p:pedidosEncontrados) {
 			System.out.print("Producto: "+p.getProducto()+" ");
 			System.out.print("Unidades: "+p.getUnidades()+" ");
 			System.out.println("Fecha pedido: "+p.getFechaPedido().format(sdf)+" ");
-		}
+		}*/
+		service.pedidosEntreFechas(fecha1, fecha2).stream()
+		.forEach(p -> {
+	        System.out.print("Producto: " + p.getProducto() + " ");
+	        System.out.print("Unidades: " + p.getUnidades() + " ");
+	        System.out.println("Fecha pedido: " + p.getFechaPedido().format(sdf) + " ");
+	        System.out.println("Fecha pedido: " + p.getFechaPedido().format(sdf) + " ");
+	    });
+		
 	}
 	static void eliminarPedido() {
 		Scanner sc=new Scanner(System.in);
