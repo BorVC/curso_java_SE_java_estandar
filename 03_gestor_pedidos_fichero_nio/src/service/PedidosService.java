@@ -30,7 +30,7 @@ public class PedidosService {
 	}
 	public void nuevoPedido(Pedido pedido) {	
 		try{
-			Files.writeString(pt, Util.convertirPedidoACadena(pedido),StandardOpenOption.APPEND,StandardOpenOption.CREATE);
+			Files.writeString(pt, Util.convertirPedidoACadena(pedido) + System.lineSeparator(),StandardOpenOption.APPEND ,StandardOpenOption.CREATE);
 		}
 		catch(IOException ex) {
 			ex.printStackTrace();
@@ -41,6 +41,7 @@ public class PedidosService {
 		try {
 			return Files.lines(pt)
 					.map(n -> Util.convertirCadenaAPedido(n))
+					//Compara las fechas entre pedidos hasta llegar al último realizado
 					.max(Comparator.comparing((Pedido p)->p.getFechaPedido()))
 					.orElse(null);
 					
@@ -69,6 +70,7 @@ public class PedidosService {
 		try{
 			return Files.lines(pt)
 			.map(n -> Util.convertirCadenaAPedido(n))
+			//Compara los días de diferencia entre las fechas de los pedidos y la fecha pasada
 			.min(Comparator.comparingLong(p->Math.abs(ChronoUnit.DAYS.between(p.getFechaPedido(), fecha))))
 			.orElse(null);
 
@@ -80,45 +82,19 @@ public class PedidosService {
 
 	}
 	
-	public void eliminarPedido1(String producto) {
+	public void eliminarPedido(String producto) {
 		try {
 			List<String> listaPedidos = Files.lines(pt)
-					.map(s -> Util.convertirCadenaAPedido(s))
-					.filter(p -> !p.getProducto().equals(producto))
-					.map(p -> Util.convertirPedidoACadena(p) + System.lineSeparator() )
-					.collect(Collectors.toList());
-			Files.write(pt, listaPedidos,StandardOpenOption.TRUNCATE_EXISTING);
+					.map(s -> Util.convertirCadenaAPedido(s))//Stream<Pedido>
+					.filter(p -> !p.getProducto().equals(producto))//Stream<Pedido>
+					.map(p -> Util.convertirPedidoACadena(p) + System.lineSeparator())//Stream<String>
+					.toList();//Lista nueva con String de pedidos
+			Files.write(pt, listaPedidos);
 			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-
-    public void eliminarPedido2(String producto) {
-    try {
-        Files.write(pt, 
-                    Files.lines(pt)
-                         .filter(line -> !Util.convertirCadenaAPedido(line).getProducto().equals(producto))
-                         .map(line -> Util.convertirPedidoACadena(Util.convertirCadenaAPedido(line)))
-                         .collect(Collectors.toList()),
-                    StandardOpenOption.TRUNCATE_EXISTING);
-    } catch (IOException ex) {
-        ex.printStackTrace();
-    }
-}
-
-    public void eliminarPedido(String producto) {
-    try {
-        Files.write(pt, 
-                    Files.lines(pt)
-                         .filter(line -> !Util.convertirCadenaAPedido(line).getProducto().equals(producto))
-                         .map(Util::convertirPedidoACadena)
-                         .collect(Collectors.toList()),
-                    StandardOpenOption.TRUNCATE_EXISTING);
-    } catch (IOException ex) {
-        ex.printStackTrace();
-    }
-}
 
 	
 	public List<Pedido> listaPedidos(){

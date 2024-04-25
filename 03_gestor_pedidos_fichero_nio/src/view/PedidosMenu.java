@@ -27,12 +27,15 @@ public class PedidosMenu {
 						mostrarReciente();
 						break;
 					case 3:
-						pedidosEntreFechas();
+						proximoAFecha();
 						break;
 					case 4:
-						eliminarPedido();
+						pedidosEntreFechas();
 						break;
 					case 5:
+						eliminarPedido();
+						break;
+					case 6:
 						System.out.println("Adios!");
 						break;
 					
@@ -43,15 +46,16 @@ public class PedidosMenu {
 			catch(NumberFormatException ex) {
 				System.out.println("Debe ser un valor numérico!!");
 			}
-		}while(opcion!=4);
+		}while(opcion!=6);
 	}
 	static void presentarMenu() {
 		System.out.println("""
 				1.- Agregar Pedido
 				2.- Pedido más reciente
-				3.- Pedidos entre fechas
-				4.- Eliminar pedido
-				5.- Salir
+				3.- Proximo fecha
+				4.- Pedidos entre fechas
+				5.- Eliminar pedido
+				6.- Salir
 				
 				""");
 	}
@@ -93,6 +97,17 @@ public class PedidosMenu {
 		System.out.println("Producto:");
 		String producto=sc.nextLine();
 		service.eliminarPedido(producto);
+	}
+	
+	static void proximoAFecha() {
+		Scanner sc=new Scanner(System.in);
+		DateTimeFormatter sdf=DateTimeFormatter.ofPattern("dd/MM/yyyy");	
+		System.out.println("Fecha (dia/mes/año):");
+		LocalDate fecha=LocalDate.parse(sc.nextLine(),sdf);
+		Pedido p=service.pedidoProximoFecha(fecha);
+		System.out.print("Producto: "+p.getProducto()+" ");
+		System.out.print("Unidades: "+p.getUnidades()+" ");
+		System.out.println("Fecha pedido: "+p.getFechaPedido().format(sdf)+" ");
 	}
 
 }
