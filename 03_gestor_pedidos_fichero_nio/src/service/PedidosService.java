@@ -80,7 +80,7 @@ public class PedidosService {
 
 	}
 	
-	public void eliminarPedido(String producto) {
+	public void eliminarPedido1(String producto) {
 		try {
 			List<String> listaPedidos = Files.lines(pt)
 					.map(s -> Util.convertirCadenaAPedido(s))
@@ -93,6 +93,20 @@ public class PedidosService {
 			ex.printStackTrace();
 		}
 	}
+
+    public void eliminarPedido(String producto) {
+    try {
+        Files.write(pt, 
+                    Files.lines(pt)
+                         .filter(line -> !Util.convertirCadenaAPedido(line).getProducto().equals(producto))
+                         .map(line -> Util.convertirPedidoACadena(Util.convertirCadenaAPedido(line)))
+                         .collect(Collectors.toList()),
+                    StandardOpenOption.TRUNCATE_EXISTING);
+    } catch (IOException ex) {
+        ex.printStackTrace();
+    }
+}
+
 	
 	public List<Pedido> listaPedidos(){
 		try {
