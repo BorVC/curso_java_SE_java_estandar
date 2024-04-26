@@ -1,4 +1,6 @@
 package model;
+import com.google.gson.annotations.SerializedName;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -12,10 +14,13 @@ import lombok.Setter;
 @Getter
 public class Pais {
 
+	@SerializedName("name")
 	private String nombre;
+	@SerializedName("region")
 	private String continente;
 	private String capital;
-	private int habitantes;
+	@SerializedName("population")
+	private Long habitantes;
 	
 	
 }

@@ -19,10 +19,10 @@ import model.Pais;
 public class PaisesService {
 
 	String dir = "paises.json";
-	private Stream<Pais> getPaises(){
+	private Stream<Pais> getStreamPaises(){
 		try {
 			Gson gson = new Gson();
-			return Arrays.stream(gson.fromJson(new FileReader(dir), Pais[].class));//Arrays<Stream>
+			return Arrays.stream(gson.fromJson(new FileReader(dir), Pais[].class));//Stream<Pais>
 		} catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -32,7 +32,7 @@ public class PaisesService {
 	
 	//Lista de continentes
 	public List<String> listaContinentes(){
-		return getPaises()
+		return getStreamPaises()
 				.map(p -> p.getContinente())//Stream<String>
 				.distinct()
 				.toList();
@@ -40,36 +40,44 @@ public class PaisesService {
 	
 	//Lista de paises buscados por continente
 	public List<Pais> listaPaisPorContinente(String continente){
-		return getPaises()
+		return getStreamPaises()
 				.filter(p -> p.getContinente().equalsIgnoreCase(continente))
 				.toList();
 	}
 	
 	//País más poblado
 	public Pais paisMasPoblado() {
-		return getPaises()
-				.max(Comparator.comparingInt(p -> p.getHabitantes()))
+		return getStreamPaises()
+				.max(Comparator.comparingLong(p -> p.getHabitantes()))
 				.orElse(null);
 	}
 	
 	//Tabla con paises agrupados por continente
 	public Map<String,String> tablaPorContinente(){
-		return getPaises()
-				.collect(Collectors.toMap(p -> p.getContinente(),p -> p.getCapital()));
-				//.collect(Collectors.groupingBy(p -> p.getContinente()));	
+		return getStreamPaises()
+				.collect(Collectors.toMap(p -> p.getContinente(),p -> p.getCapital()));	
 	}
 	
 	public Map<String,List<Pais>> tablaPaisesPorContinente(){
-		return getPaises()
+		return getStreamPaises()
 				.collect(Collectors.groupingBy(p -> p.getContinente()));
 	}
 	
 	//País a partir de su capital
 	public Pais paisPorCapital(String capital) {
-		return getPaises()
-				.filter(p -> p.getCapital().equalsIgnoreCase(capital))
-				.findFirst()
+		return getStreamPaises()
+				.filter(p -> p.getCapital() != null  && p.getCapital().equalsIgnoreCase(capital))//Stream<Pais>
+				.findFirst()//Optional<Pais>
 				.orElse(null);			
+	}
+	
+	public String paisPorString(String capital) {
+		return getStreamPaises()
+				.filter(p -> p.getCapital() != null  && p.getCapital().equalsIgnoreCase(capital))//Stream<Pais>
+				.findFirst()//Optiona<Pais>
+				.map(p -> p.getNombre())//Optiona<String>
+				.orElse("");
+
 	}
 	
 	

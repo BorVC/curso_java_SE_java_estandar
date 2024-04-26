@@ -21,7 +21,7 @@ public class EmpleadosService {
 			Gson gson = new Gson();
 			//gson.fromJson(new FileReader(dir), Empleado[].class) crea un Array
 			//Pasar a un rray<Stream>
-			return Arrays.stream(gson.fromJson(new FileReader(dir), Empleado[].class));//Array<Stream>
+			return Arrays.stream(gson.fromJson(new FileReader(dir), Empleado[].class));//Stream<Empleado>
 		} catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

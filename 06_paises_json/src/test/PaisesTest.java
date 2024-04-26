@@ -17,12 +17,12 @@ class PaisesTest {
 	}
 	@Test
 	void testListaContinentes() {
-		assertEquals(5, service.listaContinentes().size());
+		assertEquals(7, service.listaContinentes().size());
 	}
 
 	@Test
 	void testListaPaisPorContinente() {
-		assertEquals(15, service.listaPaisPorContinente("Asia").size());
+		assertEquals(50, service.listaPaisPorContinente("Asia").size());
 	}
 
 	@Test
