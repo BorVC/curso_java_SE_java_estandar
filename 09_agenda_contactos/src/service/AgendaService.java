@@ -26,7 +26,6 @@ public class AgendaService {
 	
 	public  void nuevoContacto(Contacto contacto) {
 		try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){
-			System.out.println("Conexión establecida con BD");
 			//Consulta preparada
 			String sql = "insert into contactos (nombre,email,edad) values (?,?,?)";
 			PreparedStatement ps = con.prepareStatement(sql);
@@ -38,7 +37,6 @@ public class AgendaService {
 	    
 		}catch(SQLException ex) {
 		    ex.printStackTrace();
-		    System.out.println("Ha habido un error d econexión con la BD");
 	    }
 	}
 	
