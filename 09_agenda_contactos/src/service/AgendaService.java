@@ -3,7 +3,13 @@ package service;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mysql.cj.protocol.Resultset;
 
 import model.Contacto;
 
@@ -13,64 +19,123 @@ public class AgendaService {
 	String usuario="root";
 	String password="root";
 	
-	//Método q establece la conexión
-	public void getConexion() {
-		try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){
-			System.out.println("Conexión establecida con BD");
-	    
+	//Buscar contacto por su email
+	private Contacto existeContactoPorEmail(String email) {
+		try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){		
+			String sql="select * from contactos where email=?";
+			PreparedStatement st=con.prepareStatement(sql);
+			st.setString(1, email);
+			ResultSet rs=st.executeQuery();
+			//debemos movernos a la primera y única fila, para poder extraer
+			//el valor de dicha fila(Si la busqueda no fuera concreta (SIN PARÁMETRO (String email) ) usariamos un while(rs.next())
+			if(rs.next()) {
+				return new Contacto(rs.getInt("idContacto"),
+							rs.getString("nombre"),
+							rs.getString("email"),
+							rs.getInt("edad"));
+			}
+				
+			return null;
 		}catch(SQLException ex) {
-		    ex.printStackTrace();
-		    System.out.println("Ha habido un error d econexión con la BD");
-	    }
+			ex.printStackTrace();
+			return null;
+		}
+		
 	}
 	
-	public  void nuevoContacto(Contacto contacto) {
-		try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){
-			//Consulta preparada
-			String sql = "insert into contactos (nombre,email,edad) values (?,?,?)";
-			PreparedStatement ps = con.prepareStatement(sql);
-			//sustituimos parámetros por valores
-			ps.setString(1, contacto.getNombre());
-			ps.setString(2, contacto.getEmail());
-			ps.setInt(3, contacto.getEdad());
-			ps.execute();//NO se manda otra vez la SQL
-	    
-		}catch(SQLException ex) {
-		    ex.printStackTrace();
-	    }
-	}
-	
-	public boolean eliminarContacto(String email) {
-		try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){
-			System.out.println("Conexión establecida con BD");
-			//Consulta 
-			String sql = "delete from contactos where email = ?";
-			PreparedStatement ps = con.prepareStatement(sql);
-			//sustituimos parámetros por valores
-			ps.setString(1, email);
-			//Comprobar
-			return ps.executeUpdate() > 0 ;
-		}catch(SQLException ex) {
-		    ex.printStackTrace();
-		    System.out.println("Ha habido un error d econexión con la BD");
-		    return false;
-	    }
-	}
-	
-	public boolean actualizarContacto(String email,int nuevaEdad) {
-		try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){
-			System.out.println("Conexión establecida con BD");
-			//Consulta 
-			String sql = "update  contactos set edad = ? where email = ?";
-			PreparedStatement ps = con.prepareStatement(sql);
-			//sustituimos parámetros por valores
-			ps.setInt(1, nuevaEdad);
-			ps.setString(2, email);
-			return ps.executeUpdate() > 0 ;
-		}catch(SQLException ex) {
-		    ex.printStackTrace();
-		    System.out.println("Ha habido un error d econexión con la BD");
-		    return false;
-	    }
-	}
+	//No se admitirán contactos con email duplicado
+		public boolean nuevoContacto(Contacto contacto) {
+			if(existeContactoPorEmail(contacto.getEmail())!=null) {
+				return false;
+			}
+			try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){		
+				String sql="insert into contactos(nombre,email,edad) values(?,?,?)";
+				PreparedStatement ps=con.prepareStatement(sql);
+				//sustituimos parámetros por valores
+				ps.setString(1, contacto.getNombre());
+				ps.setString(2, contacto.getEmail());
+				ps.setInt(3, contacto.getEdad());
+				ps.execute();//NO se manda otra vez la SQL
+				return true;
+				
+			}catch(SQLException ex) {
+				ex.printStackTrace();
+				return false;
+			}
+		}
+		//devuelve el contacto eliminado. Si no se ha eliminado ninguno, devuelve null
+		public Contacto eliminarContacto(String email) {
+			Contacto contacto=existeContactoPorEmail(email);
+			if(contacto==null) {
+				return null;
+			}
+			try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){		
+				String sql="delete from contactos where email=?";
+				PreparedStatement ps=con.prepareStatement(sql);
+				//sustituimos parámetros por valores
+				ps.setString(1, email);
+				return contacto;
+			}catch(SQLException ex) {
+				ex.printStackTrace();
+				return null;
+			}
+		}
+		public boolean actualizarContacto(String email, int nuevaEdad) {
+			try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){		
+				String sql="update contactos set edad=? where email=?";
+				PreparedStatement ps=con.prepareStatement(sql);
+				//sustituimos parámetros por valores
+				ps.setInt(1, nuevaEdad);
+				ps.setString(2, email);
+				return ps.executeUpdate()>0;	
+			}catch(SQLException ex) {
+				ex.printStackTrace();
+				return false;
+			}
+		}
+		
+		//Buscar contacto por su clave primaria
+		public Contacto buscarContactoPorId(int idContacto) {
+			try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){		
+				String sql="select * from contactos where idContacto=?";
+				PreparedStatement st=con.prepareStatement(sql);
+				st.setInt(1, idContacto);
+				ResultSet rs=st.executeQuery();
+				//debemos movernos a la primera y única fila, para poder extraer
+				//el valor de dicha fila
+				if(rs.next()) {
+					return new Contacto(rs.getInt("idContacto"),
+								rs.getString("nombre"),
+								rs.getString("email"),
+								rs.getInt("edad"));
+				}
+					
+				return null;
+			}catch(SQLException ex) {
+				ex.printStackTrace();
+				return null;
+			}
+			
+		}
+		//Recuperar todos los contactos
+		public List<Contacto> getContactos(){
+			List<Contacto> contactos=new ArrayList<Contacto>();
+			try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){		
+				String sql="select * from contactos";
+				Statement st=con.createStatement();
+				ResultSet rs=st.executeQuery(sql);
+				while(rs.next()) {
+					contactos.add(new Contacto(rs.getInt("idContacto"),
+							rs.getString("nombre"),
+							rs.getString("email"),
+							rs.getInt("edad")));
+					
+				}
+			}catch(SQLException ex) {
+				ex.printStackTrace();
+				
+			}
+			return contactos;
+		}
+		
 }
