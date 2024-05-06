@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class Pedido {
-
 	private int idPedido;
 	private int unidades;
 	private double total;

@@ -1,16 +1,13 @@
 package model;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Alumno {
-	private String dni;
-	private String nombre;
-	private int edad;
-	private double nota;
-	private int idCurso;
+public class JsonProvincia {
+	private List<Provincia> provincias;
 }

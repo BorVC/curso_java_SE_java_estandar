@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Alumno {
-	private String dni;
+public class Comunidad {
+	private String codigo;
 	private String nombre;
-	private int edad;
-	private double nota;
-	private int idCurso;
 }

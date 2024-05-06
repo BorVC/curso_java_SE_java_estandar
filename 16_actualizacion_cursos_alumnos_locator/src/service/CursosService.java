@@ -6,14 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import locator.LocatorConnection;
 import model.Curso;
 
 public class CursosService {
-	String cadenaConexion="jdbc:mysql://localhost:3306/formacion";
-	String usuario="root";
-	String password="root";
+	
 	public Curso cursoPorId(int idCurso) {
-		try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){		
+		try(Connection con=LocatorConnection.getConnection();){		
 			String sql="select * from cursos where idCurso=?";
 			PreparedStatement st=con.prepareStatement(sql);
 			st.setInt(1, idCurso);
@@ -38,7 +37,7 @@ public class CursosService {
 		if(cursoPorId(curso.getIdCurso())!=null) {
 			return false;
 		}
-		try(Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){		
+		try(Connection con=LocatorConnection.getConnection();){		
 			String sql="insert into cursos(idCurso,curso,duracion,precio) values(?,?,?,?)";
 			PreparedStatement ps=con.prepareStatement(sql);
 			//sustituimos parámetros por valores
