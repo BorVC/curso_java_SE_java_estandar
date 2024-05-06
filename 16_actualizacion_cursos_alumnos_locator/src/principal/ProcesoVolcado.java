@@ -3,16 +3,17 @@ package principal;
 import java.util.List;
 
 import model.Curso;
-import service.AlumnosService;
 import service.CursosJsonService;
 import service.CursosService;
+import service.FormacionServiceFactory;
+
 
 public class ProcesoVolcado {
 
 	public static void main(String[] args) {
-		var alumnosService=new AlumnosService();
-		var cursosService=new CursosService();
-		var cursosJsonService=new CursosJsonService();
+		var alumnosService=FormacionServiceFactory.getAlumnosService();
+		var cursosService=FormacionServiceFactory.getCursosService();
+		var cursosJsonService=FormacionServiceFactory.getCursosJsonService();
 		//lista de cursos del fichero
 		List<Curso> cursos=cursosJsonService.cursosAlumnos();
 		//por cada curso, comprobamos si está. Si no está, lo añadimos
