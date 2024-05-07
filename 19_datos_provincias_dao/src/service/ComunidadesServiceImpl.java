@@ -1,109 +1,81 @@
 package service;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
+import dao.ComunidadesDao;
+import dao.ComunidadesDaoFactory;
+import dao.MunicipiosDao;
+import dao.ProvinciasDao;
 import model.Comunidad;
 import model.Municipio;
 import model.Provincia;
 
 public class ComunidadesServiceImpl implements ComunidadesService {
-	String cadenaConexion="jdbc:mysql://localhost:3306/comunidades";
-	String usuario="root";
-	String password="root";
+	ComunidadesDao comunidadesDao;
+	ProvinciasDao provinciasDao;
+	MunicipiosDao municipiosDao;
 	
+	public ComunidadesServiceImpl() {
+		comunidadesDao=ComunidadesDaoFactory.getComunidadesDao();
+		provinciasDao=ComunidadesDaoFactory.getProvinciasDao();
+		municipiosDao=ComunidadesDaoFactory.getMunicipiosDao();
+	}
+
 	@Override
-	public void saveComunidades(List<Comunidad> comunidades) {
-		try (Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){
-			String sql="insert into comunidades(codigo,nombre) values(?,?)";
-			PreparedStatement ps=con.prepareStatement(sql);
-			con.setAutoCommit(false);//cancelamos autocommit
-			for(Comunidad c:comunidades){
-				ps.setString(1, c.getCodigo());
-				ps.setString(2, c.getNombre());
-				ps.execute();
+	public int saveComunidades(List<Comunidad> comunidades) {
+		//Solución 1 recorriendo la lista de comunidades y comprobando cuantas puede salvar y realizando la suma de las mismas
+		/*int cont = 0;
+		for(Comunidad c : comunidades) {
+			if(!comunidadesDao.existComunidad(c.getCodigo())) {
+				comunidadesDao.save(c);
+				cont++;
 			}
-			con.commit();
 		}
-		catch(SQLException ex) {
-			ex.printStackTrace();
+		return cont;*/
+		//Con programación funcional
+		/*return (int)comunidades.stream()
+				.filter(c -> !comunidadesDao.existComunidad(c.getCodigo()))
+				.peek(c -> comunidadesDao.save(c))
+				.count();*/
+		
+		//Solución 2
+		/*List <Comunidad> listaAux = new ArrayList<Comunidad>();
+		for(Comunidad c : comunidades) {
+			if(!comunidadesDao.existComunidad(c.getCodigo())) {
+				listaAux.add(c);
+			}
 		}
+		comunidadesDao.save(listaAux);*/
+		
+		//Con programación funcional
+		List <Comunidad> listaAux = comunidades.stream()
+				.filter(c -> !comunidadesDao.existComunidad(c.getCodigo()))
+				.toList();
+		comunidadesDao.save(listaAux);
+		return listaAux.size();
+		
+		
+				
 	}
-	public void saveComunidad(Comunidad comunidad) {
-		//pendiente
-	}
-	public boolean existeComunidad(int codigo) {
-		//pendiente
-		return false;
-	}
-	public void borrarComunidades() {
-		try (Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){
-			String sql="delete from comunidades";
-			PreparedStatement ps=con.prepareStatement(sql);
-			ps.execute();
-		}
-		catch(SQLException ex) {
-			ex.printStackTrace();
-		}
-	}
+
 	@Override
-	public void saveProvincias(List<Provincia> provincias) {
-		try (Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){
-			String sql="insert into provincias(codigo,nombre,codComunidad) values(?,?,?)";
-			PreparedStatement ps=con.prepareStatement(sql);
-			con.setAutoCommit(false);//cancelamos autocommit
-			for(Provincia p:provincias){
-				ps.setString(1, p.getCodigo());
-				ps.setString(2, p.getNombre());
-				ps.setString(3, p.getCodComunidad());
-				ps.execute();
-			}
-			con.commit();
-		}
-		catch(SQLException ex) {
-			ex.printStackTrace();
-		}
+	public int saveProvincias(List<Provincia> provincias) {
+		List<String> codigos =provinciasDao.findCodigos();
+		List <Provincia> listaAux = provincias.stream()
+				.filter(p -> !codigos.contains(p.getCodigo()))
+				.toList();
+		provinciasDao.saveProvincias(listaAux);
+		return listaAux.size();
 	}
+
 	@Override
-	public void saveMunicipios(List<Municipio> municipios) {
-		try (Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){
-			String sql="insert into municipios(codigo,nombre,codProvincia,superficie,altitud,poblacion) values(?,?,?,?,?,?)";
-			PreparedStatement ps=con.prepareStatement(sql);
-			con.setAutoCommit(false);//cancelamos autocommit
-			for(Municipio m:municipios){
-				ps.setString(1, m.getCodigo());
-				ps.setString(2, m.getNombre());
-				ps.setString(3, m.getCodProvincia());
-				ps.setDouble(4, m.getSuperficie());
-				ps.setInt(5, m.getAltitud());
-				ps.setInt(6, m.getPoblacion());
-				ps.execute();
-			}
-			con.commit();//confirmamos tx si no ha habido fallos
-		}
-		catch(SQLException ex) {
-			ex.printStackTrace();
-		}
+	public int saveMunicipios(List<Municipio> municipios) {
+		List<String> codigos=municipiosDao.findCodigos();
+		List<Municipio> aux=municipios.stream()
+				.filter(p->!codigos.contains(p.getCodigo()))
+				.toList();
+		municipiosDao.saveMunicipios(aux);
+		return aux.size();
 	}
 	
-	public int publacionTotalProvincia(String codigoProvincia) {
-		try (Connection con=DriverManager.getConnection(cadenaConexion,usuario,password);){
-			String sql="select sum(poblacion) from municipios where codProvincia=?";
-			PreparedStatement ps=con.prepareStatement(sql);
-			ps.setString(1, codigoProvincia);
-			ResultSet rs=ps.executeQuery();
-			if(rs.next()) {
-				return rs.getInt(1);
-			}
-			return 0;
-		}
-		catch(SQLException ex) {
-			ex.printStackTrace();
-			return 0;
-		}
-	}
 }
