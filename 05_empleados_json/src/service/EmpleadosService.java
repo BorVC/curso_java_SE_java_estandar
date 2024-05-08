@@ -20,7 +20,7 @@ public class EmpleadosService {
 		try {
 			Gson gson = new Gson();
 			//gson.fromJson(new FileReader(dir), Empleado[].class) crea un Array
-			//Pasar a un rray<Stream>
+			//Pasar a un array<Stream>
 			return Arrays.stream(gson.fromJson(new FileReader(dir), Empleado[].class));//Stream<Empleado>
 		} catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
 			// TODO Auto-generated catch block

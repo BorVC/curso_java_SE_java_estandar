@@ -6,14 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Movimiento {
 
 	private int idMovimiento;
 	private int idCuenta;
-	private LocalDateTime  fecha;
+	private LocalDateTime fecha;
 	private double cantidad;
 	private String operacion;
-}
+
+} 

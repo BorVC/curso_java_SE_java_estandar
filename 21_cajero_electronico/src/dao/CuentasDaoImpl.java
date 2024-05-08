@@ -8,27 +8,40 @@ import java.sql.SQLException;
 import locator.LocatorConnection;
 import model.Cuenta;
 
-public class CuentasDaoImpl implements CuentasDao {
+class CuentasDaoImpl implements CuentasDao {
 
 	@Override
 	public Cuenta findById(int idCuenta) {
-		try (Connection con=LocatorConnection.getConnection();){
-			String sql="select * from comunidades where codigo=?";
-			PreparedStatement ps=con.prepareStatement(sql);
-			ps.setString(1, codigo);			
-			ResultSet rs=ps.executeQuery();
-			return rs.next();
+		try (Connection c = LocatorConnection.getConnection()) {
+			String sql = """
+					SELECT *
+					FROM cuentas
+					WHERE numeroCuenta = ?
+					""";
+			PreparedStatement ps = c.prepareStatement(sql);
+			ps.setInt(1, idCuenta);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return new Cuenta(rs.getInt("numeroCuenta"), rs.getDouble("saldo"), rs.getString("tipocuenta"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		catch(SQLException ex) {
-			ex.printStackTrace();
-			return false;
-		}
-	}
+		
+		return null; 
 	}
 
 	@Override
 	public void updateSaldo(int idCuenta, double nuevoSaldo) {
-		// TODO Auto-generated method stub
+		try (Connection con=LocatorConnection.getConnection()){
+			String sql="UPDATE cuentas SET saldo=? WHERE numeroCuenta=?";
+			PreparedStatement ps=con.prepareStatement(sql);
+			ps.setDouble(1, nuevoSaldo);
+			ps.setInt(2, idCuenta);
+			ps.execute();
+		}catch(SQLException ex) {
+			ex.printStackTrace();
+		} 
 
 	}
 

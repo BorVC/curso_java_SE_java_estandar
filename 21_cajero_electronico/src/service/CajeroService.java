@@ -1,5 +1,11 @@
 package service;
 
+import java.util.List;
+
+import model.Cliente;
+import model.Cuenta;
+import model.Movimiento;
+
 public interface CajeroService {
 	Cuenta obtenerCuenta(int idCuenta);
 	//extrae dinero de la cuenta indicada. Si la cuenta no existe
