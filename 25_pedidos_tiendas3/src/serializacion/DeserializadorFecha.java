@@ -10,8 +10,6 @@ import com.google.gson.JsonParseException;
 
 public class DeserializadorFecha implements JsonDeserializer<LocalDate>{
 
-	//Convertir texto fecha en localdate
-	
 	@Override
 	public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 			throws JsonParseException {
