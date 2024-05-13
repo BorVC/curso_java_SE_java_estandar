@@ -47,7 +47,7 @@ public class VentanaCalcu extends JFrame {
 		this.add(jbl);
 		
 		//eventos
-				jbtSumar.addActionListener(e->{
+				/*jbtSumar.addActionListener(e->{
 					int suma=Integer.parseInt(jtf1.getText())+Integer.parseInt(jtf2.getText());
 					jlResultado.setText("Suma: "+suma);
 				});
@@ -56,7 +56,22 @@ public class VentanaCalcu extends JFrame {
 					jlResultado.setText("Producto: "+multi);
 				});
 		//Getión de eventos
-		jbtSum.addActionListener(e->jbl.setText( "Suma: " + sum));
+		jbtSum.addActionListener(e->jbl.setText( "Suma: " + sum));*/
+
+		// Eventos
+        jbtSum.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int resultado = sum(Integer.parseInt(jtf1.getText()), Integer.parseInt(jtf2.getText()));
+                jbl.setText("Resultado suma: " + resultado);
+            }
+        });
+
+        jbtMulti.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int resultado = multi(Integer.parseInt(jtf1.getText()), Integer.parseInt(jtf2.getText()));
+                jbl.setText("Resultado multiplicación: " + resultado);
+            }
+        });
 		
 	}
 	
