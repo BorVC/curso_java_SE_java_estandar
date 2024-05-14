@@ -1,5 +1,6 @@
 package graficos;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -72,11 +73,20 @@ public class VentanaCalcu extends JFrame {
                 jbl.setText("Resultado multiplicación: " + resultado);
             }
         });
+        
+        //Eventos con lambdas
+        jbtSum.addActionListener(e ->{
+        	jbl.setText("Resultado suma: " + sum(Integer.parseInt(jtf1.getText()), Integer.parseInt(jtf2.getText())));
+        });
+        
+        jbtMulti.addActionListener(e ->{
+        	jbl.setText("Resultado multiplicación: " + multi(Integer.parseInt(jtf1.getText()), Integer.parseInt(jtf2.getText())));
+        });
 		
 	}
 	
-	public int sum(String a, String b) {
-		return Integer.parseInt(a) + Integer.parseInt(b);
+	public int sum(int a,int b) {
+		return a +b;
 		
 	}
 	
