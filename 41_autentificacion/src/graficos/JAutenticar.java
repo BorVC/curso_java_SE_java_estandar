@@ -26,14 +26,25 @@ public class JAutenticar extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					JAutenticar frame = new JAutenticar();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
 	/**
 	 * Create the frame.
 	 */
 	
 	public JAutenticar() {
-		this.setVisible(true);
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -83,8 +94,14 @@ public class JAutenticar extends JFrame {
 		JButton btnRegis = new JButton("Registrar");
 		btnRegis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//Crear una instancia de la ventana JRegidtrar
 				//Objeto de la ventana registrar
 				JRegistrar jRegistrar = new JRegistrar();
+				//Hacer visible la ventana
+				jRegistrar.setVisible(true);
+				//Cerrar la ventan actual JAutentificar
+				dispose();
+				
 			}
 		});
 		btnRegis.setBounds(33, 214, 89, 23);

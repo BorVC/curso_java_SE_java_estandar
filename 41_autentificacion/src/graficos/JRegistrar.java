@@ -29,18 +29,7 @@ public class JRegistrar extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					JRegistrar frame = new JRegistrar();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	/**
 	 * Create the frame.
@@ -102,18 +91,28 @@ public class JRegistrar extends JFrame {
 				String email = jtfEmail.getText();
 				int telefono = Integer.parseInt(jtfPhone.getText());
 				String mensaje;
+				//Implementación de ClienteService
 				ClientesService clientesService = ClientesServiceFactory.getClientesService();
+				//Instamciación objeto Cliente
 				Cliente cliente = new Cliente();
 				cliente.setUsuario(usuario);
 				cliente.setPassword(password);
 				cliente.setEmail(email);
 				cliente.setTelefono(telefono);
+				
+				//Constructor con parámetros
+				/*Cliente cliente1 = new Cliente(0,jtfUsu.getText(),
+						jtfPass.getText(),
+						jtfEmail.getText(),
+						Integer.parseInt(jtfPhone.getText()));*/
+				
 				if(clientesService.nuevoCliente(cliente)) {
 					mensaje = "Cliente registrado!!!";
 				}else {
 					mensaje = "Error al registrar el cliente!!!";
 				}
 				JOptionPane.showMessageDialog(JRegistrar.this, mensaje);
+				JRegistrar.this.dispose();
 			}
 		});
 		btnRegis.setBounds(150, 202, 89, 23);
