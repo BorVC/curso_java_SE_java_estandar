@@ -10,6 +10,7 @@ import service.PaisesServiceFactory;
 
 public class TableModelPaisesImpl extends AbstractTableModel {
 	List<Pais> paises;
+	//Constructor
 	public TableModelPaisesImpl(String continente) {
 		var paisesService=PaisesServiceFactory.getPaisesService();
 		paises=paisesService.getPaisesFiltradosPor(continente);
