@@ -9,9 +9,9 @@ import service.DatosProvinciasServiceFactory;
 
 public class ComboboxModelProvinciasImpl extends DefaultComboBoxModel<Provincia> {
 	List<Provincia> provincias;
-	//Conmstructor
+	//Constructor
 	public ComboboxModelProvinciasImpl(String comunidad) {
-		var provinciasService = DatosProvinciasServiceFactory.getDatosProvinciasService();
+		/*DatosProvinciasService*/ var provinciasService = DatosProvinciasServiceFactory.getDatosProvinciasService();
 		provincias = provinciasService.provinciasComunidad(comunidad);
 	}
 	@Override

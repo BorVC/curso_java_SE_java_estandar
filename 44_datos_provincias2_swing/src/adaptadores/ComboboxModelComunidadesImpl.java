@@ -10,7 +10,7 @@ public class ComboboxModelComunidadesImpl extends DefaultComboBoxModel<String> {
 	List <String> comunidades;
 	//Constructor
 	public ComboboxModelComunidadesImpl() {
-		var comunidadesService = DatosProvinciasServiceFactory.getDatosProvinciasService();
+		/*DatosProvinciasService*/ var comunidadesService = DatosProvinciasServiceFactory.getDatosProvinciasService();
 		comunidades = comunidadesService.comunidades();
 	}
 	
